@@ -76,6 +76,33 @@ def get_available_letters(letters_guessed):
     return ''.join(not_guessed)
 
 
+def update_drawing(drawing, available_guesses):
+    """ Takes in a hangman drawing (list of strings) and available_guesses (int).
+        Returns a drawing representing the number of available guesses left before
+        game is over."""
+
+    drawing_dict = {
+        '5': (1, '|        |'),
+        '4': (2, '|        O'),
+        '3': (3, '|        |  '),
+        '2': (4, '|      / | \ '),
+        '1': (5, '|        | '),
+        '0': (6, '|       / \ ')
+    }
+
+    if available_guesses == 6:
+        for i in drawing:
+            print(i, end='\n')
+    elif available_guesses < 6:
+        for i in range(5, available_guesses-1, -1):
+            idx = str(i)
+            drawing[drawing_dict[idx][0]] = drawing_dict[idx][1]
+        for i in drawing:
+            print(i, end='\n')
+
+    return drawing
+
+
 def hangman(secret_word):
     """
     secret_word: string, the secret word to guess.
@@ -83,10 +110,23 @@ def hangman(secret_word):
     Starts up an interactive game of Hangman.
     """
 
+    # list of strings to represent the beginning of hangman game
+    # drawing is updated at each deduction to available_guesses
+    drawing = [
+        '__________',  # idx 0
+        '|         ',  # idx 1
+        '|         ',
+        '|         ',
+        '|         ',
+        '|         ',
+        '|         ',  # idx 6
+        '|         ',
+    ]
+
     avail_guesses = 6
     guessed_letters = []
     warnings = 3
-    spacer = '-------------'
+    spacer = '>>>>>>>>>>>>>>>>>>>>>>>>'
 
     # Welcome message
     print('Welcome to the game Hangman!')
@@ -98,6 +138,7 @@ def hangman(secret_word):
     is_winner_found = False
     while avail_guesses > 0:
         if is_winner_found is False:
+            update_drawing(drawing, avail_guesses)
             current_guess = get_guessed_word(secret_word, guessed_letters)
             avail_letters = get_available_letters(guessed_letters)
 
@@ -157,8 +198,10 @@ def hangman(secret_word):
             score = avail_guesses * unique_letters
             print('Congratulations, you won!! :D ')
             return 'Your total score for this game is:' + " " + str(score)
-    print(":'( ")
-    return 'Sorry you ran out of guesses. The word was' + ' ' + secret_word + '.'
+
+
+    update_drawing(drawing, avail_guesses)
+    return 'Sorry you ran out of guesses. The word was' + ' "' + secret_word + '".'
 
 
 # The next 3 functions are dedicated for Hangman with Hints
@@ -199,8 +242,11 @@ def show_possible_matches(my_word):
         if compared_word is True:
             word_match.append(word)
 
-    for match in word_match:
-        print(match, end=" ")
+    if len(word_match) > 0:
+        for match in word_match:
+            print(match, end=" ")
+    else:
+        print("No matches found.")
 
 
 def hangman_with_hints(secret_word):
@@ -212,6 +258,17 @@ def hangman_with_hints(secret_word):
     * If the guess is the symbol *, print out all words in wordlist that
       matches the current guessed word.
     """
+    drawing = [
+        '__________',  # idx 0
+        '|         ',  # idx 1
+        '|         ',
+        '|         ',
+        '|         ',
+        '|         ',
+        '|         ',  # idx 6
+        '|         ',
+    ]
+
     avail_guesses = 6
     guessed_letters = []
     spacer = '>>>>>>>>>>>>>>>>>>>>>>>>'
@@ -226,6 +283,7 @@ def hangman_with_hints(secret_word):
     is_winner_found = False
     while avail_guesses > 0:
         if is_winner_found is False:
+            update_drawing(drawing, avail_guesses)
             current_guess = get_guessed_word(secret_word, guessed_letters)
             avail_letters = get_available_letters(guessed_letters)
 
@@ -273,8 +331,9 @@ def hangman_with_hints(secret_word):
             print('Congratulations, you won!! :D')
             return 'Your total score for this game is:' + " " + str(score)
 
-    print(":'( ")
-    return 'Sorry you ran out of guesses. The word was' + ' ' + secret_word + '.'
+    update_drawing(drawing, avail_guesses)
+    return 'Sorry you ran out of guesses. The word was' + ' "' + secret_word + '".'
+
 
 
 if __name__ == "__main__":
