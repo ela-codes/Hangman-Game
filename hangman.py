@@ -10,10 +10,9 @@
 # After two correct letter guesses, you may ask for a hint by inputting an asterisk ( * ).
 # It will show you all the possible words that match what you have currently guessed.
 
- # Good luck and have fun!
+# Good luck and have fun!
 
 import random
-import string
 
 
 def load_words():
@@ -82,20 +81,19 @@ def update_drawing(drawing, available_guesses):
         game is over."""
 
     drawing_dict = {
-        '5': (1, '|        |'),
-        '4': (2, '|        O'),
-        '3': (3, '|        |  '),
-        '2': (4, '|      / | \ '),
-        '1': (5, '|        | '),
-        '0': (6, '|       / \ ')
+        5: (1, '|        |'),
+        4: (2, '|        O'),
+        3: (3, '|        |  '),
+        2: (4, '|      / | \ '),
+        1: (5, '|        | '),
+        0: (6, '|       / \ ')
     }
 
     if available_guesses == 6:
         for i in drawing:
             print(i, end='\n')
     elif available_guesses < 6:
-        for i in range(5, available_guesses-1, -1):
-            idx = str(i)
+        for idx in range(5, available_guesses - 1, -1):
             drawing[drawing_dict[idx][0]] = drawing_dict[idx][1]
         for i in drawing:
             print(i, end='\n')
@@ -198,7 +196,6 @@ def hangman(secret_word):
             score = avail_guesses * unique_letters
             print('Congratulations, you won!! :D ')
             return 'Your total score for this game is:' + " " + str(score)
-
 
     update_drawing(drawing, avail_guesses)
     return 'Sorry you ran out of guesses. The word was' + ' "' + secret_word + '".'
@@ -333,7 +330,6 @@ def hangman_with_hints(secret_word):
 
     update_drawing(drawing, avail_guesses)
     return 'Sorry you ran out of guesses. The word was' + ' "' + secret_word + '".'
-
 
 
 if __name__ == "__main__":
